@@ -1,15 +1,20 @@
 #ifndef BIGNUMBER_H
 #define BIGNUMBER_H
 
-typedef struct {
-    int *digits;
-    int n_elements;
-    int sign;
-} _bignum;
-typedef _bignum *BigNumber;
+typedef struct Node {
+    struct Node *prev;
+    int digit;        
+    struct Node *next;
+} Node;
 
-BigNumber create_bignumber(void);
-void bignumber_insert(BigNumber bn, int n);
-void bignumber_free(BigNumber bn);
+typedef struct {
+    Node *head;
+    Node *tail;
+    int sign;
+} BigNumber;
+
+BigNumber *bignumber(void);
+void bignumber_insert(BigNumber *bn, int n);
+void bignumber_free(BigNumber *bn);
 
 #endif

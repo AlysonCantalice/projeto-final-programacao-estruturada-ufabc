@@ -2,25 +2,42 @@
 #include "bignumber.h"
 
 // Creates and returns a new BigNumber 
-BigNumber create_bignumber(void)
-{
-    BigNumber bn = malloc(sizeof(BigNumber));
-    bn->digits = malloc(sizeof(int));
-    bn->n_elements = 0;
+BigNumber* bignumber(void) {
+    BigNumber *bn = (BigNumber *)malloc(sizeof(BigNumber));
+    bn->head = NULL;
+    bn->tail = NULL;
     bn->sign = 1;
     return bn;
 }
 
 // Inserts a digit into a BigNumber type
-void bignumber_insert(BigNumber bn, int n) {
-    // Makes sure that theres always enough space for one more digit
-    bn->digits = realloc(bn->digits, sizeof(int) * (bn->n_elements + 1));
-    bn->digits[bn->n_elements] = n;
-    bn->n_elements++;
+void bignumber_insert(BigNumber *bn, int n) {
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    new_node->digit = n;
+    new_node->next = NULL;
+
+    // Checks if list if empty
+    if (bn->head == NULL) {
+        new_node->prev = NULL;
+        bn->head = new_node;
+        bn->tail = new_node;
+    } else {
+        new_node->prev = bn->tail;
+        bn->tail->next = new_node;
+        bn->tail = new_node;
+    }
 }
 
 // Frees the allocated memory of a BigNumber
-void bignumber_free(BigNumber bn) {
-    free(bn->digits);
+void bignumber_free(BigNumber *bn) {
+    Node *curr_node = bn->head;
+    Node *next_node;
+
+    while (curr_node != NULL) {
+        next_node = curr_node->next;
+        free(curr_node);
+        curr_node = next_node;
+    }
+
     free(bn);
 }
