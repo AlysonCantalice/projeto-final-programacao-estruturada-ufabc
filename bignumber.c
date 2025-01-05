@@ -54,3 +54,52 @@ void bignumber_print(BigNumber *bn) {
     }
     printf("\n");
 }
+
+// Reverse a BigNumber to help in operations
+void bignumber_reverse(BigNumber *bn) {
+    Node *curr_node = bn->head;
+    Node *temp = NULL;
+
+    while (curr_node != NULL) {
+        temp = curr_node->prev;
+        curr_node->prev = curr_node->next;
+        curr_node->next = temp;
+
+        curr_node = curr_node->prev;
+    }
+
+    // Update list head
+    if (temp != NULL) {
+        bn->head = temp->prev;
+    }
+}
+
+// Add two BigNumbers and returns the sum
+BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
+    BigNumber *C = (BigNumber *)malloc(sizeof(BigNumber));
+    int carry = 0, sum = 0;
+
+    reverse(A);
+    reverse(B);
+    
+    Node *curr_node_A = A->head;
+    Node *curr_node_B = B->head;
+    
+    while (curr_node_A != NULL || curr_node_B != NULL || carry != 0) {
+        // Verify if any number has reached its end
+        int digitA = (curr_node_A != NULL) ? curr_node_A->digit : 0;
+        int digitB = (curr_node_B != NULL) ? curr_node_B->digit : 0;
+        
+        sum = digitA + digitB + carry;
+        carry = sum / 10;
+        bignumber_insert(C, sum % 10);
+        
+        // Proceed to the next node if 
+        if (curr_node_A != NULL) curr_node_A = curr_node_A->next;
+        if (curr_node_B != NULL) curr_node_B = curr_node_B->next;
+    }
+    
+    reverse(C);
+    
+    return C;
+}
