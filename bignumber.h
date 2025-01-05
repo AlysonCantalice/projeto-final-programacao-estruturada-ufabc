@@ -9,5 +9,7 @@ typedef struct {
 typedef _bignum *BigNumber;
 
 BigNumber create_bignumber(void);
+void bignumber_insert(BigNumber bn, int n);
+void bignumber_free(BigNumber bn);
 
 #endif
