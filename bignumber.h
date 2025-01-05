@@ -16,5 +16,6 @@ typedef struct {
 BigNumber *bignumber(void);
 void bignumber_insert(BigNumber *bn, int n);
 void bignumber_free(BigNumber *bn);
+void bignumber_print(BigNumber *bn);
 
 #endif

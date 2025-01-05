@@ -41,3 +41,16 @@ void bignumber_free(BigNumber *bn) {
 
     free(bn);
 }
+
+void bignumber_print(BigNumber *bn) {
+    if (bn->sign == -1) {
+        printf("-");
+    }
+
+    Node *curr_node = bn->head;
+    while (curr_node != NULL) {
+        printf("%d", curr_node->digit);
+        curr_node = curr_node->next;
+    }
+    printf("\n");
+}
