@@ -79,8 +79,8 @@ BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
     BigNumber *C = (BigNumber *)malloc(sizeof(BigNumber));
     int carry = 0, sum = 0;
 
-    reverse(A);
-    reverse(B);
+    bignumber_reverse(A);
+    bignumber_reverse(B);
     
     Node *curr_node_A = A->head;
     Node *curr_node_B = B->head;
@@ -99,7 +99,12 @@ BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
         if (curr_node_B != NULL) curr_node_B = curr_node_B->next;
     }
     
-    reverse(C);
+    bignumber_reverse(C);
     
     return C;
+}
+
+BigNumber bignumber_subtract(BigNumber *A, BigNumber *B)
+{
+    return BigNumber();
 }
