@@ -232,7 +232,11 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
     bignumber_remove_left_zeros(C);
 
     // Apply sign to the result
-    C->sign = bignumber_compare(A, B);
+    if (A->sign == -1 && A->sign == -1 && bignumber_compare(A, B) == -1) {
+        C->sign = 1;
+    } else {
+        C->sign = bignumber_compare(A, B);
+    }
 
     return C;
 }
