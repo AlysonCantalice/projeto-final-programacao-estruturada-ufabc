@@ -1,6 +1,10 @@
 #include <stdlib.h>
 #include "bignumber.h"
 
+// Prototypes
+BigNumber *bignumber_add(BigNumber *A, BigNumber *B);
+BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B);
+
 // Creates and returns a new BigNumber 
 BigNumber* bignumber(void) {
     BigNumber *bn = (BigNumber *)malloc(sizeof(BigNumber));
@@ -136,6 +140,22 @@ int bignumber_compare(BigNumber *A, BigNumber *B) {
 // Add two BigNumbers and returns the sum
 BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
     BigNumber *C = bignumber();
+    
+    // Verify if a subtraction operation would be suitable
+    if (A->sign * B->sign == -1) {
+        if (A->sign == -1) {
+            A->sign = 1;
+            C = bignumber_subtract(B, A);
+            A->sign = -1;
+        } else {
+            B->sign = 1;
+            C = bignumber_subtract(A, B);
+            B->sign = -1;
+        }
+        
+        return C;
+    }
+    
     int carry = 0, sum = 0;
 
     bignumber_reverse(A);
@@ -162,6 +182,9 @@ BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
     bignumber_reverse(B);
     bignumber_reverse(C);
     
+    // Apply sign to the result
+    C->sign = A->sign;
+
     return C;
 }
 
@@ -169,6 +192,7 @@ BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
 BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
     BigNumber *C = bignumber();
     
+    // Verify if a addition operation would be suitable
     if (A->sign * B->sign == -1) {
         C = bignumber_add(A, B);
         if (B->sign == -1) {
@@ -202,14 +226,10 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
         curr_node_B = B->head;
     }
 
-    //bignumber_print(A);
-    //bignumber_print(B);
-
     while (curr_node_A != NULL || curr_node_B != NULL) {
         int digitA = (curr_node_A != NULL) ? curr_node_A->digit : 0;
         int digitB = (curr_node_B != NULL) ? curr_node_B->digit : 0;
 
-        // printf("A: %d, B: %d\n", digitA, digitB);
         diff = digitA - digitB - borrow;
         if (diff < 0) {
             diff += 10;
