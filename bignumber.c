@@ -170,7 +170,13 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
     BigNumber *C = bignumber();
     
     if (A->sign * B->sign == -1) {
-        return bignumber_add(A, B);
+        C = bignumber_add(A, B);
+        if (B->sign == -1) {
+            C->sign = 1;
+        } else {
+            C->sign = -1;
+        }
+        return C;
     }
     
     int borrow = 0, diff = 0;
@@ -203,7 +209,7 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
         int digitA = (curr_node_A != NULL) ? curr_node_A->digit : 0;
         int digitB = (curr_node_B != NULL) ? curr_node_B->digit : 0;
 
-        printf("A: %d, B: %d\n", digitA, digitB);
+        // printf("A: %d, B: %d\n", digitA, digitB);
         diff = digitA - digitB - borrow;
         if (diff < 0) {
             diff += 10;
