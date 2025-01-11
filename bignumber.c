@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "bignumber.h"
 
 // Prototypes
@@ -33,6 +34,20 @@ void bignumber_insert(BigNumber *bn, int n) {
     }
 }
 
+// Inserts a string of digits into a BigNumber type
+void bignumber_insert_string(BigNumber *bn, char *digit_string) {
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    int digit_size = strlen(digit_string);
+    
+    for (int i = 0; i < digit_size; i++) {
+        if (digit_string[i] == '-') {
+            bn->sign = -1;
+        } else {
+            bignumber_insert(bn, digit_string[i] - '0');
+        }
+    }
+}
+
 // Frees the allocated memory of a BigNumber
 void bignumber_free(BigNumber *bn) {
     Node *curr_node = bn->head;
@@ -47,6 +62,7 @@ void bignumber_free(BigNumber *bn) {
     free(bn);
 }
 
+// Prints a BigNumber
 void bignumber_print(BigNumber *bn) {
     if (bn->sign == -1) {
         printf("-");
