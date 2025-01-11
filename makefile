@@ -10,11 +10,11 @@ $(TARGET): $(OBJ)
 
 # Compilar client.o
 client.o: client.c bignumber.h
-	$(CC) $(CFLAGS) -c client.c
+	$(CC) $(CFLAGS) -g -c client.c
 
 # Compilar bignumber.o
 bignumber.o: bignumber.c bignumber.h
-	$(CC) $(CFLAGS) -c bignumber.c
+	$(CC) $(CFLAGS) -g -c bignumber.c
 
 # Limpeza de arquivos gerados
 clean:
