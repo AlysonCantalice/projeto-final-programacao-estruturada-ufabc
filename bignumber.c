@@ -36,7 +36,6 @@ void bignumber_insert(BigNumber *bn, int n) {
 
 // Inserts a string of digits into a BigNumber type
 void bignumber_insert_string(BigNumber *bn, char *digit_string) {
-    Node *new_node = (Node *)malloc(sizeof(Node));
     int digit_size = strlen(digit_string);
     
     for (int i = 0; i < digit_size; i++) {
