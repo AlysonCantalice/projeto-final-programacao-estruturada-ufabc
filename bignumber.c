@@ -153,6 +153,19 @@ int bignumber_compare(BigNumber *A, BigNumber *B) {
     return 1;  // Numbers are equal
 }
 
+BigNumber *bignumber_copy_value(BigNumber *original) {
+    BigNumber *copy = bignumber();
+
+    Node *original_current_node = original->head;  
+    while (original_current_node) {
+        bignumber_insert(copy, original_current_node->digit);
+        original_current_node = original_current_node->next;
+    }
+
+    return copy;
+}
+
+
 // Add two BigNumbers and returns the sum
 BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
     BigNumber *C = bignumber();
@@ -203,7 +216,6 @@ BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
 
     return C;
 }
-
 
 BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
     BigNumber *C = bignumber();
