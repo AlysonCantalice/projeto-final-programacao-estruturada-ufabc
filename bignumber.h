@@ -16,6 +16,9 @@ typedef struct {
 BigNumber *bignumber(void);
 void bignumber_insert(BigNumber *bn, int n);
 void bignumber_insert_string(BigNumber *bn, char *digit_string);
+FILE *read_file(int argc, char *argv[]);
+void print_file_results(FILE *input_file);
+BigNumber *operation_realized(char operator, BigNumber *A, BigNumber *B, BigNumber *C);
 void bignumber_free(BigNumber *bn);
 void bignumber_print(BigNumber *bn);
 

@@ -47,6 +47,94 @@ void bignumber_insert_string(BigNumber *bn, char *digit_string) {
     }
 }
 
+// read the input file 
+FILE *read_file(int argc, char *argv[]){
+    // Verifica se o nome do arquivo foi passado como argumento
+    if (argc != 2) {
+        printf("Usage: %s <input_file>\n", argv[0]);
+        return 1;
+    }
+
+    // Abre o arquivo de entrada
+    FILE *inputFile = fopen(argv[1], "r");
+    if (inputFile == NULL) {
+        printf("Erro ao abrir o arquivo %s\n", argv[1]);
+    }   
+    // fclose(inputFile);
+    return inputFile;
+}
+
+// print the result of the file data, line by line 
+void print_file_results(FILE *input_file){
+    size_t len1 = 0, len2 = 0; // Comprimento inicial das strings
+    char *num1 = NULL; // Ponteiro para a string do primeiro número
+    char *num2 = NULL; // Ponteiro para a string do segundo número
+    char operator;
+    // int operacoes = 0;
+    BigNumber *A, *B, *C;
+
+    while (1) {
+        // Lê o primeiro número
+        if (getline(&num1, &len1, input_file) == -1) break;
+        num1[strcspn(num1, "\n")] = '\0'; // Remove o '\n'
+
+        // Lê o segundo número
+        if (getline(&num2, &len2, input_file) == -1) break;
+        num2[strcspn(num2, "\n")] = '\0'; // Remove o '\n'
+
+        // Lê o operador
+        if (fscanf(input_file, " %c\n", &operator) != 1) break;
+        
+        // operacoes += 1;
+
+        // Cria BigNumbers e insere os valores lidos
+        A = bignumber();
+        B = bignumber();
+        C = bignumber();
+
+        bignumber_insert_string(A, num1);
+        bignumber_insert_string(B, num2);
+
+        C = operation_realized(operator, A, B, C);
+
+        bignumber_print(C);
+
+        free(A);
+        free(B);
+        free(C);
+    }
+}
+
+// Realize the operation based on the operator
+BigNumber* operation_realized(char operator, BigNumber *A, BigNumber *B, BigNumber *C){
+    // Realiza o cálculo com base no operador
+    if (operator == '+') {
+        C = bignumber_add(A, B);
+    } 
+    else if (operator == '-') {
+        C = bignumber_subtract(A, B);
+    }
+    else if (operator == '*') {
+        // C = bignumber_add(A, B);
+        printf("Operador '%c' não declarado em 'operation_realized'!\n", operator);
+    }
+    else if (operator == '/') {
+        // C = bignumber_add(A, B);
+        printf("Operador '%c' não declarado em 'operation_realized'!\n", operator);
+    }
+    else if (operator == '%') {
+        // C = bignumber_add(A, B);
+        printf("Operador '%c' não declarado em 'operation_realized'!\n", operator);
+    }
+    else if (operator == '^') {
+        // C = bignumber_add(A, B);
+        printf("Operador '%c' não declarado em 'operation_realized'!\n", operator);
+    } else {
+        printf("Operador '%c' não suportado!\n", operator);
+    }
+    return C;
+}
+
 // Frees the allocated memory of a BigNumber
 void bignumber_free(BigNumber *bn) {
     Node *curr_node = bn->head;
