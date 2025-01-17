@@ -200,6 +200,7 @@ void bignumber_remove_left_zeros(BigNumber *bn) {
     }
 }
 
+// TODO: maybe return '0' when A == B. Currently, the return of a > b and a == b are equal
 // Compare if A => B, return 1. if A < B, return -1.
 int bignumber_compare(BigNumber *A, BigNumber *B) {
     // First, compare signs
@@ -375,4 +376,22 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
     }
 
     return C;
+}
+
+// wip: first version
+BigNumber *bignumber_multiplication(BigNumber *A, BigNumber *B) {
+    BigNumber *counter = bignumber();
+    BigNumber *ONE = bignumber();
+    bignumber_insert(ONE, 1);
+    bignumber_insert(counter, 0);
+
+    BigNumber *accumulator = bignumber();
+    
+    while (bignumber_compare(B, counter) == 1) {
+        counter = bignumber_add(counter, ONE);
+        accumulator = bignumber_add(A, accumulator);
+    }
+
+    return accumulator;
+
 }

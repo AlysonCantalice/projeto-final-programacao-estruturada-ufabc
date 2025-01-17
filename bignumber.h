@@ -24,6 +24,7 @@ void bignumber_print(BigNumber *bn);
 
 BigNumber *bignumber_add(BigNumber *A, BigNumber *B);
 BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B);
+BigNumber *bignumber_multiplication(BigNumber *A, BigNumber *B);
 
 void bignumber_reverse(BigNumber *bn);
 void bignumber_remove_left_zeros(BigNumber *bn);
