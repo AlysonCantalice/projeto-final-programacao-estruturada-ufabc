@@ -5,26 +5,30 @@
 // A entrada para o seu programa é fornecida via a entrada padrão (teclado do usuário) e o seu programa
 // deve fornecer a saída na saída padrão (escrever na tela).
 
+// VAZAMENTO DE MEMÓRIA PARA SOMA E SUBTRAÇÃO ESTÁ OK.
+// valgrind --leak-check=yes ./program ./tests/instances/04_small_pos_minus.in
 
-// AINDA NÃO É ISSO QUE FOI PEDIDO PELO PROFESSOR, SÓ ESTÁ BOM PARA VALIDAR RESULTADOS
+// para rodar com gdb: (para funcionar, precisa alterar read_file() para: argc != 1 e fopen(argv[0])) 
+// gdb ./program
+// run < teste.txt
 
+// TESTE 1 AO 9 PASSOU. O 10 DEU ERRO!
+// $ rm out.txt 
+// $ ./program < ./tests/instances/10_small_minus.in >> out.txt
+// $ diff out.txt ./tests/instances/10_small_minus.out  
 
-// TA COM MEMORIA VAZANDO
-// valgrind --leak-check=full ./program ./tests/instances/04_small_pos_minus.in
+// -----------------------------------------
+// Iniciar a instância de calculadora de BigNumber
+ 
+int main(){
 
+    bignumber_calculator();
 
-// Rodar o executavel com o input sendo um arquivo
-int main(int argc, char *argv[]){
-
-    FILE *input_file = read_file(argc, argv);
-    print_file_results(input_file);
-
-    // NÃO ESTOU FECHANDO NA FUNÇÃO PQ SE NAO ELA NAO RETORNA O ARQUIVO
-    // fclose(inputFile); 
-    
     return 0;
 }
 
+
+// -----------------------------------------
 // Rodar o executavel com valores fixos no código
 
 // int main() {
@@ -46,87 +50,29 @@ int main(int argc, char *argv[]){
 // }
 
 
+// ------------------------------------------
+// usando o input como inteiro
 
-// Rodar o executavel com o input sendo um arquivo
-
-// para rodar com gdb: (para funcionar, precisa alterar para: argc != 1 e fopen(argv[0])) 
-// gdb ./program
-// run < teste.txt
-
-// int main(int argc, char *argv[]) {
-//     // Verifica se o nome do arquivo foi passado como argumento
-//     if (argc != 2) {
-//         printf("Usage: %s <input_file>\n", argv[0]);
-//         return 1;
-//     }
-
-//     // Abre o arquivo de entrada
-//     FILE *inputFile = fopen(argv[1], "r");
-//     if (inputFile == NULL) {
-//         printf("Erro ao abrir o arquivo %s\n", argv[1]);
-//         return 1;
-//     }
-
-    // Criação das variáveis BigNumber
-    // BigNumber *A, *B, *C;
-
-    // char *num1 = NULL; // Ponteiro para a string do primeiro número
-    // char *num2 = NULL; // Ponteiro para a string do segundo número
-    // size_t len1 = 0, len2 = 0; // Comprimento inicial das strings
-    // char operator;
-    // int operacoes = 0;
-
-    // print_file_results(inputFile);
-
-    // // Lê o arquivo até o final
-    // while (1) {
-        
-    //     // Lê o primeiro número
-    //     if (getline(&num1, &len1, inputFile) == -1) break;
-    //     num1[strcspn(num1, "\n")] = '\0'; // Remove o '\n'
-
-    //     // Lê o segundo número
-    //     if (getline(&num2, &len2, inputFile) == -1) break;
-    //     num2[strcspn(num2, "\n")] = '\0'; // Remove o '\n'
-
-    //     // Lê o operador
-    //     if (fscanf(inputFile, " %c\n", &operator) != 1) break;
-
-    //     operacoes += 1;
-
-    //     // Cria BigNumbers e insere os valores lidos
-    //     A = bignumber();
-    //     B = bignumber();
-    //     C = bignumber();
-
-    //     bignumber_insert_string(A, num1);
-    //     bignumber_insert_string(B, num2);
-
-    //     // Realiza o cálculo com base no operador
-    //     if (operator == '+') {
-    //         C = bignumber_add(A, B);
-    //     } else {
-    //         printf("Operador '%c' não suportado!\n", operator);
-    //         continue;
-    //     }
-
-    //     bignumber_print(C);
-
-    //     free(A);
-    //     free(B);
-    //     free(C);
-    //     // printf("\n");
-        
-    // }
-
-    // printf("%d", operacoes);
-    // Fecha o arquivo
+// int main(){
+//     int num1, num2;
+//     char operator;
+//     BigNumber *A, *B, *C;
     
+//     // Cria BigNumbers e insere os valores lidos
+//     A = bignumber();
+//     B = bignumber();
+//     C = bignumber();
 
-    // // Libera memória
-    // bignumber_free(A);
-    // bignumber_free(B);
-    // bignumber_free(C);
+//     bignumber_insert(A, num1);
+//     bignumber_insert(B, num2);
 
-//     return 0;
+//     C = operation_realized(operator, A, B, C);
+
+//     bignumber_print(C);
+
+//     bignumber_free(A);
+//     bignumber_free(B);
+//     bignumber_free(C);
+
+//     return 0;    
 // }
