@@ -240,27 +240,50 @@ int bignumber_compare(BigNumber *A, BigNumber *B) {
     while (curr_node_A) { lenA++; curr_node_A = curr_node_A->next; }
     while (curr_node_B) { lenB++; curr_node_B = curr_node_B->next; }
     
-    if (lenA > lenB) {
-        return 1;
-    } else if (lenB > lenA) {
-        return -1;
+    if (A->sign == 1) {
+        if (lenA > lenB) {
+            return 1;
+        } else if (lenB > lenA) {
+            return -1;
+        }
+    } else {
+        if (lenA > lenB) {
+            return -1;
+        } else if (lenB > lenA) {
+            return 1;
+        }
     }
+    
 
     // Compare digit by digit
     curr_node_A = A->head;
     curr_node_B = B->head;
-    while (curr_node_A && curr_node_B) {
-        if (curr_node_A->digit != curr_node_B->digit) {
-            if (curr_node_A->digit > curr_node_B->digit) {
-                return 1;
-            } else if (curr_node_A->digit < curr_node_B->digit){
-                return -1;
+    if (A->sign == -1 && B->sign == -1) {
+        while (curr_node_A && curr_node_B) {
+            if (curr_node_A->digit != curr_node_B->digit) {
+                if (curr_node_A->digit > curr_node_B->digit) {
+                    return -1;
+                } else if (curr_node_A->digit < curr_node_B->digit){
+                    return 1;
+                }
             }
+            curr_node_A = curr_node_A->next;
+            curr_node_B = curr_node_B->next;
         }
-        curr_node_A = curr_node_A->next;
-        curr_node_B = curr_node_B->next;
+    } else {
+        while (curr_node_A && curr_node_B) {
+            if (curr_node_A->digit != curr_node_B->digit) {
+                if (curr_node_A->digit > curr_node_B->digit) {
+                    return 1;
+                } else if (curr_node_A->digit < curr_node_B->digit){
+                    return -1;
+                }
+            }
+            curr_node_A = curr_node_A->next;
+            curr_node_B = curr_node_B->next;
+        }
     }
-
+    
     return 1;  // Numbers are equal
 }
 
@@ -330,10 +353,26 @@ BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
 
 BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
     BigNumber *C = bignumber();
-    
+
     // Verify if a addition operation would be suitable
     if (A->sign * B->sign == -1) {
+        int a_swap = 0;
+        int b_swap = 0;
+        if (B->sign == -1) {
+            b_swap = 1;
+            B->sign = 1;
+        } else if (A->sign == -1) {
+            a_swap = 1;
+            A->sign = 1;
+        }
+
         C = bignumber_add(A, B);
+
+        if (b_swap == 1) {
+            B->sign = -1;
+        } else if (a_swap == 1) {
+            A->sign = -1;
+        }
         if (B->sign == -1) {
             C->sign = 1;
         } else {
@@ -350,6 +389,13 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
     Node *curr_node_A;
     Node *curr_node_B;
     
+    int swap_signs = 0;
+    if (A->sign == -1 && B->sign == -1) {
+        swap_signs = 1;
+        A->sign = 1;
+        B->sign = 1;
+    }
+
     // Swap A with B if B > A
     if (bignumber_compare(A, B) == -1) {
         bignumber_reverse(A);
@@ -363,6 +409,11 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
         
         curr_node_A = A->head;
         curr_node_B = B->head;
+    }
+
+    if (swap_signs) {
+        A->sign = -1;
+        B->sign = -1;
     }
 
     while (curr_node_A != NULL || curr_node_B != NULL) {
@@ -390,9 +441,12 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
     // Remove leading zeros
     bignumber_remove_left_zeros(C);
 
+//-2246
+//-95328
+
     // Apply sign to the result
-    if (A->sign == -1 && A->sign == -1 && bignumber_compare(A, B) == -1) {
-        C->sign = 1;
+    if (A->sign == -1 && B->sign == -1 && bignumber_compare(A, B) == -1) {
+        C->sign = -1;
     } else {
         C->sign = bignumber_compare(A, B);
     }
