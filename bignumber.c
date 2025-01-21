@@ -558,4 +558,80 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B)
 	return C;
 }
 
-BigNumber *bignumber_multiplication(BigNumber *A, BigNumber *B);
+BigNumber *bignumber_multiplication(BigNumber *A, BigNumber *B)
+{
+	BigNumber *result = bignumber();
+
+	// Verifica se algum dos números é zero
+	if ((A->head->digit == 0 && A->head->next == NULL) ||
+		(B->head->digit == 0 && B->head->next == NULL))
+	{
+		bignumber_insert(result, 0);
+		return result;
+	}
+
+	bignumber_reverse(A);
+	bignumber_reverse(B);
+
+	Node *curr_node_A = A->head;
+	Node *curr_node_B = B->head;
+
+	int zerosAtTheEnd = 0;
+
+	// para cada dígito do número A
+	while (curr_node_A != NULL)
+	{
+		BigNumber *accumulator = bignumber();
+		int product;
+		int carry = 0;
+
+		// Adiciona zeros à esquerda de acordo com a casa numérica
+		for (int i = 0; i < zerosAtTheEnd; i++)
+		{
+			bignumber_insert(accumulator, 0);
+		}
+
+		curr_node_B = B->head; // reset do dígito do número A
+
+		// itera e multiplica nos dígitos do número A
+		while (curr_node_B != NULL)
+		{
+			int digit_node_A = curr_node_A->digit;
+			int digit_node_B = (curr_node_B != NULL) ? curr_node_B->digit : 0;
+
+			product = (digit_node_A * digit_node_B + carry);
+
+			bignumber_insert(accumulator, product % 10);
+
+			carry = product / 10;
+
+			if (curr_node_A != NULL)
+				curr_node_B = curr_node_B->next;
+		}
+
+		if (carry > 0)
+		{
+			bignumber_insert(accumulator, carry);
+		}
+
+		bignumber_reverse(accumulator);
+
+		BigNumber *new_result = bignumber_add(result, accumulator);
+		bignumber_free(result);
+		bignumber_free(accumulator);
+
+		result = new_result;
+
+		zerosAtTheEnd += 1;
+
+		curr_node_A = curr_node_A->next;
+	}
+
+	bignumber_reverse(A);
+	bignumber_reverse(B);
+
+	// sinal do resultado da multiplicação
+	result->sign = A->sign * B->sign;
+
+	return result;
+}
