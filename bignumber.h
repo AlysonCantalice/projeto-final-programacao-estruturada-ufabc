@@ -3,7 +3,7 @@
 
 typedef struct Node {
     struct Node *prev;
-    int digit;        
+    int digit;
     struct Node *next;
 } Node;
 
@@ -18,7 +18,8 @@ void bignumber_insert(BigNumber *bn, int n);
 void bignumber_insert_string(BigNumber *bn, char *digit_string);
 char *read_line(void);
 int bignumber_calculator(void);
-BigNumber *operation_realized(char operator, BigNumber *A, BigNumber *B, BigNumber *C);
+BigNumber *operation_realized(char operator, BigNumber * A, BigNumber *B,
+                              BigNumber *C);
 void bignumber_free(BigNumber *bn);
 void bignumber_print(BigNumber *bn);
 
