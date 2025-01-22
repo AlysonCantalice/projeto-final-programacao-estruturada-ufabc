@@ -7,7 +7,10 @@
 BigNumber *bignumber_add(BigNumber *A, BigNumber *B);
 BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B);
 
-// Creates and returns a new BigNumber
+/**
+ * @brief Creates and returns a new BigNumber.
+ * @return new BigNumber instance.
+ */
 BigNumber *bignumber(void) {
     BigNumber *bn = (BigNumber *)malloc(sizeof(BigNumber));
     bn->head = NULL;
@@ -16,7 +19,12 @@ BigNumber *bignumber(void) {
     return bn;
 }
 
-// Inserts a digit into a BigNumber type
+/**
+ * @brief Inserts a digit into a BigNumber type
+ * @param n - integer digit
+ * @param bn - A pointer to the BigNumber object where the digit will be
+ * inserted.
+ */
 void bignumber_insert(BigNumber *bn, int n) {
     Node *new_node = (Node *)malloc(sizeof(Node));
     new_node->digit = n;
@@ -34,7 +42,13 @@ void bignumber_insert(BigNumber *bn, int n) {
     }
 }
 
-// Inserts a string of digits into a BigNumber type
+/**
+ * @brief Inserts a string of digits into a BigNumber type.
+ * @param digit_string - char pointer string of digits to be inserted into the
+ * BigNumber.
+ * @param bn - A pointer to the BigNumber object where the digits will be
+ * inserted.
+ */
 void bignumber_insert_string(BigNumber *bn, char *digit_string) {
     int digit_size = strlen(digit_string);
 
@@ -47,7 +61,9 @@ void bignumber_insert_string(BigNumber *bn, char *digit_string) {
     }
 }
 
-// read one line.
+/**
+ * @brief Reads one line of standard input.
+ */
 char *read_line(void) {
     char *line = NULL;
     size_t len = 0;
@@ -168,7 +184,10 @@ void bignumber_free(BigNumber *bn) {
     free(bn);
 }
 
-// Prints a BigNumber
+/**
+ * @brief Prints a BigNumber.
+ * @param bn - A pointer to the BigNumber that will be printed.
+ */
 void bignumber_print(BigNumber *bn) {
     if (bn->sign == -1) {
         printf("-");
@@ -182,7 +201,10 @@ void bignumber_print(BigNumber *bn) {
     printf("\n");
 }
 
-// Reverse a BigNumber to help in operations
+/**
+ * @brief Reverses a BigNumber to assist in operations.
+ * @param bn - A pointer to the BigNumber that will be reversed.
+ */
 void bignumber_reverse(BigNumber *bn) {
     Node *curr_node = bn->head;
     Node *temp = NULL;
