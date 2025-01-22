@@ -22,7 +22,7 @@ BigNumber *bignumber(void) {
 /**
  * @brief Inserts a digit into a BigNumber type
  * @param n - integer digit
- * @param bn - A pointer to the BigNumber object where the digit will be
+ * @param bn - pointer to the BigNumber object where the digit will be
  * inserted.
  */
 void bignumber_insert(BigNumber *bn, int n) {
@@ -46,7 +46,7 @@ void bignumber_insert(BigNumber *bn, int n) {
  * @brief Inserts a string of digits into a BigNumber type.
  * @param digit_string - char pointer string of digits to be inserted into the
  * BigNumber.
- * @param bn - A pointer to the BigNumber object where the digits will be
+ * @param bn - pointer to the BigNumber object where the digits will be
  * inserted.
  */
 void bignumber_insert_string(BigNumber *bn, char *digit_string) {
@@ -83,10 +83,23 @@ char *read_line(void) {
     return line;
 }
 
-// Realize the operation based on the operator and BigNumbers
+/**
+ * @brief Realizes the operation based on the operator and BigNumbers.
+ *
+ * This function performs an operation on the given BigNumber objects based on
+ * the specified operator.
+ *
+ * @param operator The operator used to determine the operation
+ * ('+', '-', '*' and '/').
+ * @param A - pointer to the first BigNumber operand.
+ * @param B - pointer to the second BigNumber operand.
+ * @param C - pointer to the result bigNumber
+ *
+ * @return pointer to a BigNumber object representing the result of the
+ * operation.
+ */
 BigNumber *operation_realized(char operator, BigNumber * A, BigNumber *B,
                               BigNumber *C) {
-    // Realiza o cálculo com base no operador
     if (operator== '+') {
         C = bignumber_add(A, B);
     } else if (operator== '-') {
@@ -170,7 +183,10 @@ int bignumber_calculator(void) {
     return 1;
 }
 
-// Frees the allocated memory of a BigNumber
+/**
+ * @brief Frees the allocated memory of a BigNumber.
+ * @param bn pointer to the BigNumber object to be freed.
+ */
 void bignumber_free(BigNumber *bn) {
     Node *curr_node = bn->head;
     Node *next_node;
@@ -223,7 +239,11 @@ void bignumber_reverse(BigNumber *bn) {
     }
 }
 
-// Remove all zeros to the left
+/**
+ * @brief Removes all leading zeros from a BigNumber.
+ * @param bn pointer to the BigNumber object whose leading zeros will be
+ * removed.
+ */
 void bignumber_remove_left_zeros(BigNumber *bn) {
     Node *curr_node = bn->head;
     while (curr_node && curr_node->digit == 0) {
@@ -242,8 +262,19 @@ void bignumber_remove_left_zeros(BigNumber *bn) {
     }
 }
 
-// TODO: maybe return '0' when A == B. Currently, the return of a > b and a == b
-// are equal Compare if A => B, return 1. if A < B, return -1.
+/**
+ * @brief Compares two BigNumbers (A and B).
+ *
+ * This function compares two BigNumber objects and returns:
+ * --> `1` if 'A' is greater than or equal to 'B',
+ * --> `-1` if 'A' is less than B''
+ *
+ * @param A A pointer to the first BigNumber to be compared.
+ * @param B A pointer to the second BigNumber to be compared.
+ *
+ * @return 1 if A is greater than or equal to B, -1 if A is less than B.
+ */
+
 int bignumber_compare(BigNumber *A, BigNumber *B) {
     // First, compare signs
     if (A->sign > B->sign) {
@@ -324,7 +355,6 @@ BigNumber *bignumber_copy_value(BigNumber *original) {
     return copy;
 }
 
-// Add two BigNumbers and returns the sum
 BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
     BigNumber *C = bignumber();
 
