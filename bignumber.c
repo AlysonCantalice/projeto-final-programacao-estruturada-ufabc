@@ -124,12 +124,13 @@ BigNumber *operation_realized(char operator, BigNumber * A, BigNumber *B,
 }
 
 /**
- * @brief Reads input for two BigNumbers and an operator, performs the operation, and prints the result.
+ * @brief Reads input for two BigNumbers and an operator, performs the
+ * operation, and prints the result.
  *
- * This function continuously reads input consisting of two BigNumbers and an operator 
- * (addition, subtraction, multiplication, or division). It performs the specified operation 
- * on the BigNumbers and prints the result. Memory is managed by freeing the BigNumbers and 
- * input strings after each operation.
+ * This function continuously reads input consisting of two BigNumbers and an
+ * operator (addition, subtraction, multiplication, or division). It performs
+ * the specified operation on the BigNumbers and prints the result. Memory is
+ * managed by freeing the BigNumbers and input strings after each operation.
  *
  * @return 1 if the calculation process completes successfully.
  */
@@ -417,7 +418,7 @@ BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
 /**
  * @brief Subtracts one BigNumber (B) from another (A) and returns the result.
  *
- * This function handles subtraction of two BigNumbers, considering their signs. 
+ * This function handles subtraction of two BigNumbers, considering their signs.
  *
  * @param A A pointer to the first BigNumber (minuend).
  * @param B A pointer to the second BigNumber (subtrahend).
@@ -530,9 +531,10 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
 /**
  * @brief Multiplies two BigNumbers (A and B) and returns the result.
  *
- * This function performs the multiplication of two BigNumbers, handling the carry 
- * and zeros at the end of the result. If either of the numbers is zero, the result 
- * is set to zero. The result's sign is determined based on the signs of A and B.
+ * This function performs the multiplication of two BigNumbers, handling the
+ * carry and zeros at the end of the result. If either of the numbers is zero,
+ * the result is set to zero. The result's sign is determined based on the signs
+ * of A and B.
  *
  * @param A A pointer to the first BigNumber (multiplicand).
  * @param B A pointer to the second BigNumber (multiplier).
@@ -564,7 +566,7 @@ BigNumber *bignumber_multiplication(BigNumber *A, BigNumber *B) {
         int product;
         int carry = 0;
 
-        // Add left zeroes 
+        // Add left zeroes
         for (int i = 0; i < zerosAtTheEnd; i++) {
             bignumber_insert(accumulator, 0);
         }
@@ -615,8 +617,8 @@ BigNumber *bignumber_multiplication(BigNumber *A, BigNumber *B) {
 /**
  * @brief Returns the number of digits in a BigNumber.
  *
- * This function traverses through the nodes of the BigNumber and counts how many 
- * digits are present by iterating over the linked list structure.
+ * This function traverses through the nodes of the BigNumber and counts how
+ * many digits are present by iterating over the linked list structure.
  *
  * @param bn A pointer to the BigNumber whose length is to be calculated.
  *
@@ -638,83 +640,58 @@ int bignumber_length(BigNumber *bn) {
 /**
  * @brief Divides one BigNumber (A) by another (B) and returns the quotient.
  *
- * This function performs division of two BigNumbers, calculating the quotient by
- * repeatedly comparing digits and adjusting based on the result of the division.
+ * This function performs division of two BigNumbers, calculating the quotient
+ * by repeatedly comparing digits and adjusting based on the result of the
+ * division.
  *
  * @param A A pointer to the BigNumber to be divided (dividend).
  * @param B A pointer to the BigNumber by which A is divided (divisor).
  *
- * @return A pointer to a new BigNumber representing the quotient of A divided by B.
+ * @return A pointer to a new BigNumber representing the quotient of A divided
+ * by B.
  */
 BigNumber *bignumber_division(BigNumber *A, BigNumber *B) {
-    BigNumber *C = bignumber(); // resultado (quociente)
-    // BigNumber *temp = bignumber();
-    BigNumber *E = bignumber();
+    BigNumber *result = bignumber();
 
+    // If A < B, result is 0
     if (bignumber_compare(A, B) == -1) {
-        bignumber_insert(C, 0);
-        return C;
+        bignumber_insert(result, 0);
+        return result;
     }
 
-    bignumber_insert(C, 1);
+    // work with positive numbers, and after return correctly
+    int result_sign = A->sign * B->sign;
+    int original_A_sign = A->sign;
+    int original_B_sign = B->sign;
+    A->sign = 1;
+    B->sign = 1;
 
-    BigNumber *TEN = bignumber();
-    bignumber_insert_string(TEN, "10");
+    int REMAINDER_INITIAL_VALUE = 0;
 
-    int first_bignumber_length = bignumber_length(A);
-    int second_bignumber_length = bignumber_length(B);
-
-    for (int i = 0; i < first_bignumber_length - second_bignumber_length; i++) {
-        BigNumber *temp = bignumber_multiplication(C, TEN);
-        bignumber_free(C);
-        C = temp;
-    }
-
-    bignumber_print(C);
+    BigNumber *remainder = bignumber();
+    bignumber_insert(remainder, REMAINDER_INITIAL_VALUE);
 
     Node *curr_node_A = A->head;
-    Node *curr_node_B = B->head;
-    Node *curr_node_C = C->head;
+    while (curr_node_A != NULL) {
+        int current_node_digit = curr_node_A->digit;
+        bignumber_insert(remainder, current_node_digit);
 
-    int digit_node_A = curr_node_A->digit;
-    int digit_node_B = curr_node_B->digit;
-
-    /*
-    se a > c entao valor = a/c
-    se a = c entao valor = a
-    se a < c entao valor = 0
-    */
-    if (digit_node_A > digit_node_B) {
-        curr_node_C->digit = digit_node_A / digit_node_B;
-    }
-
-    if (digit_node_A == digit_node_B) {
-        curr_node_C->digit = digit_node_A;
-    }
-
-    if (digit_node_A < digit_node_B) {
-        curr_node_C->digit = 0;
-    }
-
-    BigNumber *D = bignumber_multiplication(C, B);
-
-    int flag = 0;
-
-    int result_compare = bignumber_compare(D, A); // compare '=='
-    if (result_compare == 1) {
-        int segunda_decimal_A = A->head->next->digit;
-        int segunda_decimal_D = D->head->next->digit;
-
-        if (segunda_decimal_A < segunda_decimal_D) {
-            C->head->digit = C->head->digit - 1;
+        int result_digit = 0;
+        while (bignumber_compare(remainder, B) == 1) {
+            BigNumber *temporary = bignumber_subtract(remainder, B);
+            bignumber_free(remainder);
+            remainder = temporary;
+            result_digit++;
         }
+
+        bignumber_insert(result, result_digit);
+        curr_node_A = curr_node_A->next;
     }
 
-    if (result_compare == -1) {
-        int segunda_decimal_A = A->head->next->digit;
-        int segunda_decimal_D = D->head->next->digit;
-    }
+    // Restore original signs
+    A->sign = original_A_sign;
+    B->sign = original_B_sign;
+    result->sign = result_sign;
 
-    int teste = bignumber_length(A);
-    return teste;
+    return result;
 }

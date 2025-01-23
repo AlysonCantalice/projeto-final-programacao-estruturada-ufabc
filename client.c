@@ -72,19 +72,18 @@ int main() {
         bignumber_insert_string(B, second_line);
 
         // run the operation based on the bignumbers and the operator
-        // C = operation_realized(operator, A, B, C);
+        C = operation_realized(operator, A, B, C);
 
-        C = bignumber_division(A, B);
-        // bignumber_print(C);
+        bignumber_print(C);
 
         bignumber_free(A);
         bignumber_free(B);
         bignumber_free(C);
 
-        // // Frees memory allocated by reading
-        // free(first_line);
-        // free(second_line);
-        // free(third_line);
+        // Frees memory allocated by reading
+        free(first_line);
+        free(second_line);
+        free(third_line);
     }
     return 1;
 }
