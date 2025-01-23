@@ -9,6 +9,7 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B);
 
 /**
  * @brief Creates and returns a new BigNumber.
+ *
  * @return new BigNumber instance.
  */
 BigNumber *bignumber(void) {
@@ -21,6 +22,7 @@ BigNumber *bignumber(void) {
 
 /**
  * @brief Inserts a digit into a BigNumber type
+ *
  * @param n - integer digit
  * @param bn - pointer to the BigNumber object where the digit will be
  * inserted.
@@ -44,6 +46,7 @@ void bignumber_insert(BigNumber *bn, int n) {
 
 /**
  * @brief Inserts a string of digits into a BigNumber type.
+ *
  * @param digit_string - char pointer string of digits to be inserted into the
  * BigNumber.
  * @param bn - pointer to the BigNumber object where the digits will be
@@ -109,11 +112,9 @@ BigNumber *operation_realized(char operator, BigNumber * A, BigNumber *B,
     } else if (operator== '/') {
         C = bignumber_division(A, B);
     } else if (operator== '%') {
-        // C = bignumber_add(A, B);
         printf(
             "Operador '%c' não declarado em 'operation_realized'!\n", operator);
     } else if (operator== '^') {
-        // C = bignumber_add(A, B);
         printf(
             "Operador '%c' não declarado em 'operation_realized'!\n", operator);
     } else {
@@ -122,17 +123,22 @@ BigNumber *operation_realized(char operator, BigNumber * A, BigNumber *B,
     return C;
 }
 
-// instance of bignumber calculator
-// ./program
-// ./program >> output.txt
-// ./program < {path_of_file}
-// ./program < {path_of_file} >> output.txt
+/**
+ * @brief Reads input for two BigNumbers and an operator, performs the operation, and prints the result.
+ *
+ * This function continuously reads input consisting of two BigNumbers and an operator 
+ * (addition, subtraction, multiplication, or division). It performs the specified operation 
+ * on the BigNumbers and prints the result. Memory is managed by freeing the BigNumbers and 
+ * input strings after each operation.
+ *
+ * @return 1 if the calculation process completes successfully.
+ */
 int bignumber_calculator(void) {
     char *first_line, *second_line, *third_line;
     BigNumber *A, *B, *C;
 
     while (1) {
-        // realiza a leitura das três linhas
+        // Read the first three lines
         first_line = read_line();
 
         if (first_line == NULL)
@@ -158,7 +164,7 @@ int bignumber_calculator(void) {
 
         char operator= third_line[0];
 
-        // Cria BigNumbers e insere os valores lidos
+        // Create bignumbers and insert the values
         A = bignumber();
         B = bignumber();
 
@@ -173,7 +179,7 @@ int bignumber_calculator(void) {
         bignumber_free(B);
         bignumber_free(C);
 
-        // Libera a memória alocada pela leitura
+        // Free memory
         free(first_line);
         free(second_line);
         free(third_line);
@@ -183,6 +189,7 @@ int bignumber_calculator(void) {
 
 /**
  * @brief Frees the allocated memory of a BigNumber.
+ *
  * @param bn pointer to the BigNumber object to be freed.
  */
 void bignumber_free(BigNumber *bn) {
@@ -200,6 +207,7 @@ void bignumber_free(BigNumber *bn) {
 
 /**
  * @brief Prints a BigNumber.
+ *
  * @param bn - A pointer to the BigNumber that will be printed.
  */
 void bignumber_print(BigNumber *bn) {
@@ -217,6 +225,7 @@ void bignumber_print(BigNumber *bn) {
 
 /**
  * @brief Reverses a BigNumber to assist in operations.
+ *
  * @param bn - A pointer to the BigNumber that will be reversed.
  */
 void bignumber_reverse(BigNumber *bn) {
@@ -239,6 +248,7 @@ void bignumber_reverse(BigNumber *bn) {
 
 /**
  * @brief Removes all leading zeros from a BigNumber.
+ *
  * @param bn pointer to the BigNumber object whose leading zeros will be
  * removed.
  */
@@ -340,6 +350,18 @@ int bignumber_compare(BigNumber *A, BigNumber *B) {
     return 1; // Numbers are equal
 }
 
+/**
+ * @brief Adds two BigNumbers (A and B) and returns the result.
+ *
+ * This function handles addition of two BigNumbers, considering their signs.
+ * If the numbers have opposite signs, it performs a subtraction instead.
+ *
+ * @param A A pointer to the first BigNumber.
+ * @param B A pointer to the second BigNumber.
+ *
+ * @return A pointer to a new BigNumber representing the sum of A and B.
+ *         The result's sign is determined based on the signs of A and B.
+ */
 BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
     BigNumber *C = bignumber();
 
@@ -392,6 +414,17 @@ BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
     return C;
 }
 
+/**
+ * @brief Subtracts one BigNumber (B) from another (A) and returns the result.
+ *
+ * This function handles subtraction of two BigNumbers, considering their signs. 
+ *
+ * @param A A pointer to the first BigNumber (minuend).
+ * @param B A pointer to the second BigNumber (subtrahend).
+ *
+ * @return A pointer to a new BigNumber representing the difference of A and B.
+ *         The result's sign is adjusted based on the relative size of A and B.
+ */
 BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
     BigNumber *C = bignumber();
 
@@ -484,9 +517,6 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
     // Remove leading zeros
     bignumber_remove_left_zeros(C);
 
-    //-2246
-    //-95328
-
     // Apply sign to the result
     if (A->sign == -1 && B->sign == -1 && bignumber_compare(A, B) == -1) {
         C->sign = -1;
@@ -497,10 +527,23 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
     return C;
 }
 
+/**
+ * @brief Multiplies two BigNumbers (A and B) and returns the result.
+ *
+ * This function performs the multiplication of two BigNumbers, handling the carry 
+ * and zeros at the end of the result. If either of the numbers is zero, the result 
+ * is set to zero. The result's sign is determined based on the signs of A and B.
+ *
+ * @param A A pointer to the first BigNumber (multiplicand).
+ * @param B A pointer to the second BigNumber (multiplier).
+ *
+ * @return A pointer to a new BigNumber representing the product of A and B.
+ *         The result's sign is adjusted based on the signs of A and B.
+ */
 BigNumber *bignumber_multiplication(BigNumber *A, BigNumber *B) {
     BigNumber *result = bignumber();
 
-    // Verifica se algum dos números é zero
+    // Check if any of the numbers is zero
     if ((A->head->digit == 0 && A->head->next == NULL) ||
         (B->head->digit == 0 && B->head->next == NULL)) {
         bignumber_insert(result, 0);
@@ -515,20 +558,20 @@ BigNumber *bignumber_multiplication(BigNumber *A, BigNumber *B) {
 
     int zerosAtTheEnd = 0;
 
-    // para cada dígito do número A
+    // for each A digit
     while (curr_node_A != NULL) {
         BigNumber *accumulator = bignumber();
         int product;
         int carry = 0;
 
-        // Adiciona zeros à esquerda de acordo com a casa numérica
+        // Add left zeroes 
         for (int i = 0; i < zerosAtTheEnd; i++) {
             bignumber_insert(accumulator, 0);
         }
 
-        curr_node_B = B->head; // reset do dígito do número A
+        curr_node_B = B->head; // Reset A digit
 
-        // itera e multiplica nos dígitos do número A
+        // Run through and multiply A digits
         while (curr_node_B != NULL) {
             int digit_node_A = curr_node_A->digit;
             int digit_node_B = (curr_node_B != NULL) ? curr_node_B->digit : 0;
@@ -563,18 +606,27 @@ BigNumber *bignumber_multiplication(BigNumber *A, BigNumber *B) {
     bignumber_reverse(A);
     bignumber_reverse(B);
 
-    // sinal do resultado da multiplicação
+    // Multiplication signal
     result->sign = A->sign * B->sign;
 
     return result;
 }
 
-// Função para contar o número de dígitos em um BigNumber
+/**
+ * @brief Returns the number of digits in a BigNumber.
+ *
+ * This function traverses through the nodes of the BigNumber and counts how many 
+ * digits are present by iterating over the linked list structure.
+ *
+ * @param bn A pointer to the BigNumber whose length is to be calculated.
+ *
+ * @return The number of digits in the BigNumber.
+ */
 int bignumber_length(BigNumber *bn) {
     int counter = 0;
     Node *current = bn->head;
 
-    // Percorre a lista até o final, contando os nós (dígitos)
+    // Run through nodes, count how many nodes are there
     while (current != NULL) {
         counter++;
         current = current->next;
@@ -583,6 +635,17 @@ int bignumber_length(BigNumber *bn) {
     return counter;
 }
 
+/**
+ * @brief Divides one BigNumber (A) by another (B) and returns the quotient.
+ *
+ * This function performs division of two BigNumbers, calculating the quotient by
+ * repeatedly comparing digits and adjusting based on the result of the division.
+ *
+ * @param A A pointer to the BigNumber to be divided (dividend).
+ * @param B A pointer to the BigNumber by which A is divided (divisor).
+ *
+ * @return A pointer to a new BigNumber representing the quotient of A divided by B.
+ */
 BigNumber *bignumber_division(BigNumber *A, BigNumber *B) {
     BigNumber *C = bignumber(); // resultado (quociente)
     // BigNumber *temp = bignumber();
