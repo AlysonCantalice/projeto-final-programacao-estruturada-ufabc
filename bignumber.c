@@ -271,6 +271,20 @@ void bignumber_remove_left_zeros(BigNumber *bn) {
     }
 }
 
+BigNumber *bignumber_copy_value(BigNumber *original) {
+    BigNumber *copy = bignumber();
+
+    Node *original_current_node = original->head;
+    while (original_current_node) {
+        bignumber_insert(copy, original_current_node->digit);
+        original_current_node = original_current_node->next;
+    }
+
+    copy->sign = original->sign;
+
+    return copy;
+}
+
 /**
  * @brief Compares two BigNumbers (A and B).
  *
@@ -615,29 +629,6 @@ BigNumber *bignumber_multiplication(BigNumber *A, BigNumber *B) {
 }
 
 /**
- * @brief Returns the number of digits in a BigNumber.
- *
- * This function traverses through the nodes of the BigNumber and counts how
- * many digits are present by iterating over the linked list structure.
- *
- * @param bn A pointer to the BigNumber whose length is to be calculated.
- *
- * @return The number of digits in the BigNumber.
- */
-int bignumber_length(BigNumber *bn) {
-    int counter = 0;
-    Node *current = bn->head;
-
-    // Run through nodes, count how many nodes are there
-    while (current != NULL) {
-        counter++;
-        current = current->next;
-    }
-
-    return counter;
-}
-
-/**
  * @brief Divides one BigNumber (A) by another (B) and returns the quotient.
  *
  * This function performs division of two BigNumbers, calculating the quotient
@@ -653,12 +644,6 @@ int bignumber_length(BigNumber *bn) {
 BigNumber *bignumber_division(BigNumber *A, BigNumber *B) {
     BigNumber *result = bignumber();
 
-    // If A < B, result is 0
-    if (bignumber_compare(A, B) == -1) {
-        bignumber_insert(result, 0);
-        return result;
-    }
-
     // work with positive numbers, and after return correctly
     int result_sign = A->sign * B->sign;
     int original_A_sign = A->sign;
@@ -666,32 +651,45 @@ BigNumber *bignumber_division(BigNumber *A, BigNumber *B) {
     A->sign = 1;
     B->sign = 1;
 
-    int REMAINDER_INITIAL_VALUE = 0;
+    // If A < B, result is 0
+    if (bignumber_compare(A, B) == -1) {
+        bignumber_insert(result, 0);
 
-    BigNumber *remainder = bignumber();
-    bignumber_insert(remainder, REMAINDER_INITIAL_VALUE);
+        A->sign = original_A_sign;
+        B->sign = original_B_sign;
+        return result;
+    }
 
-    Node *curr_node_A = A->head;
-    while (curr_node_A != NULL) {
-        int current_node_digit = curr_node_A->digit;
-        bignumber_insert(remainder, current_node_digit);
+    // working with a copy of A
+    BigNumber *dividend = bignumber_copy_value(A);
+    BigNumber *current_dividend = bignumber();
+    Node *curr_digit = dividend->head;
+
+    while (curr_digit != NULL) {
+        bignumber_insert(current_dividend, curr_digit->digit);
+        bignumber_remove_left_zeros(current_dividend);
 
         int result_digit = 0;
-        while (bignumber_compare(remainder, B) == 1) {
-            BigNumber *temporary = bignumber_subtract(remainder, B);
-            bignumber_free(remainder);
-            remainder = temporary;
+        while (bignumber_compare(current_dividend, B) >= 0) {
+            BigNumber *temporary = bignumber_subtract(current_dividend, B);
+            bignumber_free(current_dividend);
+            current_dividend = temporary;
             result_digit++;
         }
 
         bignumber_insert(result, result_digit);
-        curr_node_A = curr_node_A->next;
+        curr_digit = curr_digit->next;
     }
+
+    bignumber_free(dividend);
+    bignumber_free(current_dividend);
+
+    bignumber_remove_left_zeros(result);
+    result->sign = result_sign;
 
     // Restore original signs
     A->sign = original_A_sign;
     B->sign = original_B_sign;
-    result->sign = result_sign;
 
     return result;
 }
