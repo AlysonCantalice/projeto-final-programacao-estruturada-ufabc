@@ -107,9 +107,7 @@ BigNumber *operation_realized(char operator, BigNumber * A, BigNumber *B,
     } else if (operator== '*') {
         C = bignumber_multiplication(A, B);
     } else if (operator== '/') {
-        // C = bignumber_add(A, B);
-        printf(
-            "Operador '%c' não declarado em 'operation_realized'!\n", operator);
+        C = bignumber_division(A, B);
     } else if (operator== '%') {
         // C = bignumber_add(A, B);
         printf(
@@ -274,7 +272,6 @@ void bignumber_remove_left_zeros(BigNumber *bn) {
  *
  * @return 1 if A is greater than or equal to B, -1 if A is less than B.
  */
-
 int bignumber_compare(BigNumber *A, BigNumber *B) {
     // First, compare signs
     if (A->sign > B->sign) {
@@ -570,4 +567,91 @@ BigNumber *bignumber_multiplication(BigNumber *A, BigNumber *B) {
     result->sign = A->sign * B->sign;
 
     return result;
+}
+
+// Função para contar o número de dígitos em um BigNumber
+int bignumber_length(BigNumber *bn) {
+    int counter = 0;
+    Node *current = bn->head;
+
+    // Percorre a lista até o final, contando os nós (dígitos)
+    while (current != NULL) {
+        counter++;
+        current = current->next;
+    }
+
+    return counter;
+}
+
+BigNumber *bignumber_division(BigNumber *A, BigNumber *B) {
+    BigNumber *C = bignumber(); // resultado (quociente)
+    // BigNumber *temp = bignumber();
+    BigNumber *E = bignumber();
+
+    if (bignumber_compare(A, B) == -1) {
+        bignumber_insert(C, 0);
+        return C;
+    }
+
+    bignumber_insert(C, 1);
+
+    BigNumber *TEN = bignumber();
+    bignumber_insert_string(TEN, "10");
+
+    int first_bignumber_length = bignumber_length(A);
+    int second_bignumber_length = bignumber_length(B);
+
+    for (int i = 0; i < first_bignumber_length - second_bignumber_length; i++) {
+        BigNumber *temp = bignumber_multiplication(C, TEN);
+        bignumber_free(C);
+        C = temp;
+    }
+
+    bignumber_print(C);
+
+    Node *curr_node_A = A->head;
+    Node *curr_node_B = B->head;
+    Node *curr_node_C = C->head;
+
+    int digit_node_A = curr_node_A->digit;
+    int digit_node_B = curr_node_B->digit;
+
+    /*
+    se a > c entao valor = a/c
+    se a = c entao valor = a
+    se a < c entao valor = 0
+    */
+    if (digit_node_A > digit_node_B) {
+        curr_node_C->digit = digit_node_A / digit_node_B;
+    }
+
+    if (digit_node_A == digit_node_B) {
+        curr_node_C->digit = digit_node_A;
+    }
+
+    if (digit_node_A < digit_node_B) {
+        curr_node_C->digit = 0;
+    }
+
+    BigNumber *D = bignumber_multiplication(C, B);
+
+    int flag = 0;
+
+    int result_compare = bignumber_compare(D, A); // compare '=='
+    if (result_compare == 1) {
+        int segunda_decimal_A = A->head->next->digit;
+        int segunda_decimal_D = D->head->next->digit;
+
+        if (segunda_decimal_A < segunda_decimal_D) {
+            C->head->digit = C->head->digit - 1;
+        }
+    }
+
+    if (result_compare == -1) {
+        int segunda_decimal_A = A->head->next->digit;
+        int segunda_decimal_D = D->head->next->digit;
+    }
+
+    int teste = bignumber_length(A);
+    return teste;
 }
