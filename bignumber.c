@@ -112,6 +112,7 @@ BigNumber *operation_realized(char operator, BigNumber * A, BigNumber *B,
     } else if (operator== '/') {
         C = bignumber_division(A, B);
     } else if (operator== '%') {
+        // C = bignumber_remainder(A, B);
         printf(
             "Operador '%c' não declarado em 'operation_realized'!\n", operator);
     } else if (operator== '^') {
@@ -319,47 +320,21 @@ int bignumber_compare(BigNumber *A, BigNumber *B) {
         curr_node_B = curr_node_B->next;
     }
 
-    if (A->sign == 1) {
-        if (lenA > lenB) {
-            return 1;
-        } else if (lenB > lenA) {
-            return -1;
-        }
-    } else {
-        if (lenA > lenB) {
-            return -1;
-        } else if (lenB > lenA) {
-            return 1;
-        }
-    }
+    if (lenA > lenB)
+        return A->sign == 1 ? 1 : -1;
+    if (lenA < lenB)
+        return A->sign == 1 ? -1 : 1;
 
     // Compare digit by digit
     curr_node_A = A->head;
     curr_node_B = B->head;
-    if (A->sign == -1 && B->sign == -1) {
-        while (curr_node_A && curr_node_B) {
-            if (curr_node_A->digit != curr_node_B->digit) {
-                if (curr_node_A->digit > curr_node_B->digit) {
-                    return -1;
-                } else if (curr_node_A->digit < curr_node_B->digit) {
-                    return 1;
-                }
-            }
-            curr_node_A = curr_node_A->next;
-            curr_node_B = curr_node_B->next;
-        }
-    } else {
-        while (curr_node_A && curr_node_B) {
-            if (curr_node_A->digit != curr_node_B->digit) {
-                if (curr_node_A->digit > curr_node_B->digit) {
-                    return 1;
-                } else if (curr_node_A->digit < curr_node_B->digit) {
-                    return -1;
-                }
-            }
-            curr_node_A = curr_node_A->next;
-            curr_node_B = curr_node_B->next;
-        }
+    while (curr_node_A && curr_node_B) {
+        if (curr_node_A->digit > curr_node_B->digit)
+            return A->sign == 1 ? 1 : -1;
+        if (curr_node_A->digit < curr_node_B->digit)
+            return A->sign == 1 ? -1 : 1;
+        curr_node_A = curr_node_A->next;
+        curr_node_B = curr_node_B->next;
     }
 
     return 1; // Numbers are equal
@@ -663,22 +638,20 @@ BigNumber *bignumber_division(BigNumber *A, BigNumber *B) {
     // working with a copy of A
     BigNumber *dividend = bignumber_copy_value(A);
     BigNumber *current_dividend = bignumber();
-    Node *curr_digit = dividend->head;
+    Node *curr_node = dividend->head;
 
-    while (curr_digit != NULL) {
-        bignumber_insert(current_dividend, curr_digit->digit);
-        bignumber_remove_left_zeros(current_dividend);
-
+    while (curr_node != NULL) {
+        bignumber_insert(current_dividend, curr_node->digit);
         int result_digit = 0;
         while (bignumber_compare(current_dividend, B) >= 0) {
             BigNumber *temporary = bignumber_subtract(current_dividend, B);
             bignumber_free(current_dividend);
-            current_dividend = temporary;
+            current_dividend = bignumber_copy_value(temporary);
             result_digit++;
         }
 
         bignumber_insert(result, result_digit);
-        curr_digit = curr_digit->next;
+        curr_node = curr_node->next;
     }
 
     bignumber_free(dividend);
