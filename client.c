@@ -2,33 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// ENTRADAS E SAÍDAS:
-// A entrada para o seu programa é fornecida via a entrada padrão (teclado do
-// usuário) e o seu programa deve fornecer a saída na saída padrão (escrever na
-// tela).
-
-// VAZAMENTO DE MEMÓRIA PARA SOMA E SUBTRAÇÃO ESTÁ OK.
-// valgrind --leak-check=yes ./program ./tests/instances/04_small_pos_minus.in
-
-// para rodar com gdb: (para funcionar, precisa alterar read_file() para: argc
-// != 1 e fopen(argv[0])) gdb ./program run < teste.txt
-
-// TESTE 1 AO 14 PASSOU. O 15 DEU ERRO!
-// $ rm out.txt
-// $ ./program < ./tests/instances/10_small_minus.in >> out.txt
-// $ diff out.txt ./tests/instances/10_small_minus.out
-
-// • bignumber.h um arquivo de header de C contendo toda a interface pública do
-// seu tipo BigNumber. • bignumber.c um arquivo de C contendo a implementação da
-// sua interface pública. • client.c um arquivo de C contendo a função main() e
-// que é responsável por usar a sua biblioteca bignumber.h para resolver o
-// problema do projeto. • makefile um arquivo de configuração que permita o
-// programa make compilar corretamente o seu programa quando o seguinte comando
-// for digitado dentro do diretório xxxxx: make
-
-// -----------------------------------------
-// Iniciar a instância de calculadora de BigNumber
-
 int main() {
     char *first_line, *second_line, *third_line;
     BigNumber *A, *B, *C;
@@ -87,13 +60,3 @@ int main() {
     }
     return 1;
 }
-
-// -----------------------------------------
-// Iniciar a instância de calculadora de BigNumber
-
-// int main(){
-
-//     bignumber_calculator();
-
-//     return 0;
-// }
