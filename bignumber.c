@@ -694,12 +694,15 @@ BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B){
         current_dividend = bignumber_copy_value(A);
 
         if (original_A_sign == -1 && original_B_sign == -1){
+            current_dividend->sign = -1;
         return current_dividend;
         }
         if (original_A_sign == -1 || original_B_sign == -1){
         current_dividend = bignumber_subtract(B,current_dividend);
         }
-
+        if (original_B_sign == -1){
+            current_dividend->sign = -1;
+        }
         A->sign = original_A_sign;
         B->sign = original_B_sign;
         return current_dividend;
@@ -727,6 +730,7 @@ BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B){
     bignumber_free(dividend);
     
     if (original_A_sign == -1 && original_B_sign == -1){
+        current_dividend->sign = -1;
         return current_dividend;
     }
 
@@ -734,6 +738,9 @@ BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B){
         current_dividend = bignumber_subtract(B,current_dividend);
     }
 
+    if (original_B_sign == -1){
+        current_dividend->sign = -1;
+    }
     return current_dividend;
 
 }
