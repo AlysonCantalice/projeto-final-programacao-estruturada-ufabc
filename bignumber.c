@@ -719,6 +719,7 @@ BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B){
             BigNumber *temporary = bignumber_subtract(current_dividend, B);
             bignumber_free(current_dividend);
             current_dividend = bignumber_copy_value(temporary);
+            bignumber_free(temporary);
             result_digit++;
         }
 
