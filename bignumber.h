@@ -138,4 +138,19 @@ BigNumber *bignumber_multiplication(BigNumber *A, BigNumber *B);
  */
 BigNumber *bignumber_division(BigNumber *A, BigNumber *B);
 
+/**
+ * @brief Divides one BigNumber (A) by another (B) and returns the remainder.
+ *
+ * This function performs division of two BigNumbers, calculating the quotient
+ * by repeatedly comparing digits and adjusting based on the result of the
+ * division.
+ *
+ * @param A A pointer to the BigNumber to be divided (dividend).
+ * @param B A pointer to the BigNumber by which A is divided (divisor).
+ *
+ * @return A pointer to a new BigNumber representing the remainder of A divided
+ * by B.
+ */
+BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B);
+
 #endif

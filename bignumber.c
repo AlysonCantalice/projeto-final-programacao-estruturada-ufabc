@@ -112,9 +112,7 @@ BigNumber *operation_realized(char operator, BigNumber * A, BigNumber *B,
     } else if (operator== '/') {
         C = bignumber_division(A, B);
     } else if (operator== '%') {
-        // C = bignumber_remainder(A, B);
-        printf(
-            "Operador '%c' não declarado em 'operation_realized'!\n", operator);
+        C = bignumber_remainder(A, B);
     } else if (operator== '^') {
         printf(
             "Operador '%c' não declarado em 'operation_realized'!\n", operator);
@@ -665,4 +663,77 @@ BigNumber *bignumber_division(BigNumber *A, BigNumber *B) {
     B->sign = original_B_sign;
 
     return result;
+}
+
+/**
+ * @brief Divides one BigNumber (A) by another (B) and returns the remainder.
+ *
+ * This function performs division of two BigNumbers, calculating the quotient
+ * by repeatedly comparing digits and adjusting based on the result of the
+ * division.
+ *
+ * @param A A pointer to the BigNumber to be divided (dividend).
+ * @param B A pointer to the BigNumber by which A is divided (divisor).
+ *
+ * @return A pointer to a new BigNumber representing the remainder of A divided
+ * by B.
+ */
+BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B){
+    BigNumber *result = bignumber();
+    BigNumber *current_dividend = bignumber();
+
+    // work with positive numbers, and after return correctly
+    int result_sign = A->sign * B->sign;
+    int original_A_sign = A->sign;
+    int original_B_sign = B->sign;
+    A->sign = 1;
+    B->sign = 1;
+
+    // If A < B, result is 0
+    if (bignumber_compare(A, B) == -1) {
+        current_dividend = bignumber_copy_value(A);
+
+        if (original_A_sign == -1 && original_B_sign == -1){
+        return current_dividend;
+        }
+        if (original_A_sign == -1 || original_B_sign == -1){
+        current_dividend = bignumber_subtract(B,current_dividend);
+        }
+
+        A->sign = original_A_sign;
+        B->sign = original_B_sign;
+        return current_dividend;
+    }
+
+    // working with a copy of A
+    BigNumber *dividend = bignumber_copy_value(A);
+    Node *curr_node = dividend->head;
+
+    while (curr_node != NULL) {
+        bignumber_insert(current_dividend, curr_node->digit);
+        int result_digit = 0;
+        while (bignumber_compare(current_dividend, B) >= 0) {
+            BigNumber *temporary = bignumber_subtract(current_dividend, B);
+            bignumber_free(current_dividend);
+            current_dividend = bignumber_copy_value(temporary);
+            result_digit++;
+        }
+
+        bignumber_insert(result, result_digit);
+        curr_node = curr_node->next;
+    }
+
+    bignumber_free(result);
+    bignumber_free(dividend);
+    
+    if (original_A_sign == -1 && original_B_sign == -1){
+        return current_dividend;
+    }
+
+    if (original_A_sign == -1 || original_B_sign == -1){
+        current_dividend = bignumber_subtract(B,current_dividend);
+    }
+
+    return current_dividend;
+
 }
