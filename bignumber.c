@@ -375,6 +375,9 @@ BigNumber *bignumber_add(BigNumber *A, BigNumber *B) {
     bignumber_reverse(B);
     bignumber_reverse(C);
 
+    free(curr_node_A);
+    free(curr_node_B);
+
     // Apply sign to the result
     C->sign = A->sign;
 
@@ -480,6 +483,9 @@ BigNumber *bignumber_subtract(BigNumber *A, BigNumber *B) {
     bignumber_reverse(A);
     bignumber_reverse(B);
     bignumber_reverse(C);
+
+    free(curr_node_A);
+    free(curr_node_B);
 
     // Remove leading zeros
     bignumber_remove_left_zeros(C);
@@ -659,7 +665,7 @@ BigNumber *bignumber_division(BigNumber *A, BigNumber *B) {
  * @return A pointer to a new BigNumber representing the remainder of A divided
  * by B.
  */
-BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B){
+BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B) {
     BigNumber *result = bignumber();
     BigNumber *current_dividend = bignumber();
 
@@ -675,18 +681,18 @@ BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B){
         current_dividend = bignumber_copy_value(A);
         bignumber_free(result);
 
-        if (original_A_sign == -1 && original_B_sign == -1){
+        if (original_A_sign == -1 && original_B_sign == -1) {
             current_dividend->sign = -1;
-        return current_dividend;
+            return current_dividend;
         }
-        if (original_A_sign == -1 || original_B_sign == -1){
+        if (original_A_sign == -1 || original_B_sign == -1) {
 
-        BigNumber *temporary = bignumber_subtract(B, current_dividend);
-        bignumber_free(current_dividend);
-        current_dividend = bignumber_copy_value(temporary);
-        bignumber_free(temporary);
+            BigNumber *temporary = bignumber_subtract(B, current_dividend);
+            bignumber_free(current_dividend);
+            current_dividend = bignumber_copy_value(temporary);
+            bignumber_free(temporary);
         }
-        if (original_B_sign == -1){
+        if (original_B_sign == -1) {
             current_dividend->sign = -1;
         }
         A->sign = original_A_sign;
@@ -715,22 +721,21 @@ BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B){
     bignumber_free(result);
     bignumber_free(dividend);
     free(curr_node);
-    
-    if (original_A_sign == -1 && original_B_sign == -1){
+
+    if (original_A_sign == -1 && original_B_sign == -1) {
         current_dividend->sign = -1;
         return current_dividend;
     }
 
-    if (original_A_sign == -1 || original_B_sign == -1){
+    if (original_A_sign == -1 || original_B_sign == -1) {
         BigNumber *temporary = bignumber_subtract(B, current_dividend);
         bignumber_free(current_dividend);
         current_dividend = bignumber_copy_value(temporary);
         bignumber_free(temporary);
     }
 
-    if (original_B_sign == -1){
+    if (original_B_sign == -1) {
         current_dividend->sign = -1;
     }
     return current_dividend;
-
 }
