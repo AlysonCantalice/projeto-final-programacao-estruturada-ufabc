@@ -1,21 +1,25 @@
-# Variáveis
-CC = gcc # Compilador
-CFLAGS = -std=c99 -Wall -Wextra -Wvla -g # Opções de compilação
-OBJ = client.o bignumber.o # Objetos intermediários
-TARGET = program # Nome do executável
+# Variables
+CC = gcc # Compilator
+CFLAGS = -std=c99 -Wall -Wextra -Wvla -g # Options to compile
+OBJ = client.o bignumber.o line.o # Intermediate objects
+TARGET = program # Executable name
 
-# Regra padrão para compilar o programa
+# Rule to Compile all the program
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ)
 
-# Compilar client.o
-client.o: client.c bignumber.h
+# Compile client.o
+client.o: client.c bignumber.h line.h
 	$(CC) $(CFLAGS) -g -c client.c
 
-# Compilar bignumber.o
+# Compile bignumber.o
 bignumber.o: bignumber.c bignumber.h
 	$(CC) $(CFLAGS) -g -c bignumber.c
 
-# Limpeza de arquivos gerados
+# Compile line.o
+line.o: line.c line.h
+	$(CC) $(CFLAGS) -g -c line.c
+    
+# clean the files
 clean:
 	rm -f $(OBJ) $(TARGET)

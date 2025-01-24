@@ -22,6 +22,11 @@ typedef struct {
     int sign;
 } BigNumber;
 
+/**
+ * @brief Creates and returns a new BigNumber.
+ *
+ * @return new BigNumber instance.
+ */
 BigNumber *bignumber(void);
 
 /**
@@ -33,20 +38,6 @@ BigNumber *bignumber(void);
  * inserted.
  */
 void bignumber_insert_string(BigNumber *bn, char *digit_string);
-char *read_line(void);
-
-/**
- * @brief Reads input for two BigNumbers and an operator, performs the
- * operation, and prints the result.
- *
- * This function continuously reads input consisting of two BigNumbers and an
- * operator (addition, subtraction, multiplication, or division). It performs
- * the specified operation on the BigNumbers and prints the result. Memory is
- * managed by freeing the BigNumbers and input strings after each operation.
- *
- * @return 1 if the calculation process completes successfully.
- */
-int bignumber_calculator(void);
 
 /**
  * @brief Realizes the operation based on the operator and BigNumbers.
@@ -63,8 +54,7 @@ int bignumber_calculator(void);
  * @return pointer to a BigNumber object representing the result of the
  * operation.
  */
-BigNumber *operation_realized(char operator, BigNumber * A, BigNumber *B,
-                              BigNumber *C);
+BigNumber *operation_realized(char operator, BigNumber * A, BigNumber *B, BigNumber *C);
 
 /**
  * @brief Frees the allocated memory of a BigNumber.

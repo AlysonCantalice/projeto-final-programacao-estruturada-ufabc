@@ -1,4 +1,5 @@
 #include "bignumber.h"
+#include "line.h"
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -1,4 +1,5 @@
 #include "bignumber.h"
+#include "line.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -62,28 +63,6 @@ void bignumber_insert_string(BigNumber *bn, char *digit_string) {
             bignumber_insert(bn, digit_string[i] - '0');
         }
     }
-}
-
-/**
- * @brief Reads one line of standard input.
- */
-char *read_line(void) {
-    char *line = NULL;
-    size_t len = 0;
-    size_t read;
-
-    read = getline(&line, &len, stdin);
-    if (read == -1) {
-        free(line);
-        return NULL;
-    }
-
-    // Remove o \n do final da linha
-    if (line[read - 1] == '\n') {
-        line[read - 1] = '\0';
-    }
-
-    return line;
 }
 
 /**
@@ -646,6 +625,7 @@ BigNumber *bignumber_division(BigNumber *A, BigNumber *B) {
             bignumber_free(current_dividend);
             current_dividend = bignumber_copy_value(temporary);
             result_digit++;
+            bignumber_free(temporary);
         }
 
         bignumber_insert(result, result_digit);
@@ -654,6 +634,7 @@ BigNumber *bignumber_division(BigNumber *A, BigNumber *B) {
 
     bignumber_free(dividend);
     bignumber_free(current_dividend);
+    free(curr_node);
 
     bignumber_remove_left_zeros(result);
     result->sign = result_sign;
@@ -683,7 +664,6 @@ BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B){
     BigNumber *current_dividend = bignumber();
 
     // work with positive numbers, and after return correctly
-    int result_sign = A->sign * B->sign;
     int original_A_sign = A->sign;
     int original_B_sign = B->sign;
     A->sign = 1;
@@ -691,14 +671,20 @@ BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B){
 
     // If A < B, result is 0
     if (bignumber_compare(A, B) == -1) {
+        bignumber_free(current_dividend);
         current_dividend = bignumber_copy_value(A);
+        bignumber_free(result);
 
         if (original_A_sign == -1 && original_B_sign == -1){
             current_dividend->sign = -1;
         return current_dividend;
         }
         if (original_A_sign == -1 || original_B_sign == -1){
-        current_dividend = bignumber_subtract(B,current_dividend);
+
+        BigNumber *temporary = bignumber_subtract(B, current_dividend);
+        bignumber_free(current_dividend);
+        current_dividend = bignumber_copy_value(temporary);
+        bignumber_free(temporary);
         }
         if (original_B_sign == -1){
             current_dividend->sign = -1;
@@ -719,16 +705,16 @@ BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B){
             BigNumber *temporary = bignumber_subtract(current_dividend, B);
             bignumber_free(current_dividend);
             current_dividend = bignumber_copy_value(temporary);
-            bignumber_free(temporary);
             result_digit++;
+            bignumber_free(temporary);
         }
-
         bignumber_insert(result, result_digit);
         curr_node = curr_node->next;
     }
 
     bignumber_free(result);
     bignumber_free(dividend);
+    free(curr_node);
     
     if (original_A_sign == -1 && original_B_sign == -1){
         current_dividend->sign = -1;
@@ -736,7 +722,10 @@ BigNumber *bignumber_remainder(BigNumber *A, BigNumber *B){
     }
 
     if (original_A_sign == -1 || original_B_sign == -1){
-        current_dividend = bignumber_subtract(B,current_dividend);
+        BigNumber *temporary = bignumber_subtract(B, current_dividend);
+        bignumber_free(current_dividend);
+        current_dividend = bignumber_copy_value(temporary);
+        bignumber_free(temporary);
     }
 
     if (original_B_sign == -1){
